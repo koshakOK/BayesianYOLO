@@ -1,14 +1,15 @@
 import albumentations as A
 import cv2
+import os
 import torch
 
 from albumentations.pytorch import ToTensorV2
 from utils import seed_everything
 
-DATASET = 'PASCAL_VOC'
-DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+DATASET = 'COCO'
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 # seed_everything()  # If you want deterministic behavior
-NUM_WORKERS = 4
+NUM_WORKERS = os.cpu_count()
 BATCH_SIZE = 32
 IMAGE_SIZE = 416
 NUM_CLASSES = 20
@@ -22,7 +23,7 @@ S = [IMAGE_SIZE // 32, IMAGE_SIZE // 16, IMAGE_SIZE // 8]
 PIN_MEMORY = True
 LOAD_MODEL = True
 SAVE_MODEL = True
-CHECKPOINT_FILE = "checkpoint.pth.tar"
+CHECKPOINT_FILE = "yolov3_pascal_78.1map.pth.tar"
 IMG_DIR = DATASET + "/images/"
 LABEL_DIR = DATASET + "/labels/"
 
