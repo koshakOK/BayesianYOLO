@@ -6,9 +6,9 @@ import torch
 from albumentations.pytorch import ToTensorV2
 from utils import seed_everything
 
-DATASET = 'COCO'
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# seed_everything()  # If you want deterministic behavior
+DATASET = 'PASCAL_VOC'
+DEVICE = torch.device('cuda:3')
+seed_everything(4)  # If you want deterministic behavior
 NUM_WORKERS = os.cpu_count()
 BATCH_SIZE = 32
 IMAGE_SIZE = 416
