@@ -51,12 +51,14 @@ class YOLODataset(Dataset):
     def __getitem__(self, index):
         label_path = os.path.join(
             self.label_dir, self.annotations.iloc[index, 1])
-        bboxes = np.roll(np.loadtxt(fname=label_path,
-                         delimiter=" ", ndmin=2), 4, axis=1).tolist()
+        bboxes = np.abs(np.roll(np.loadtxt(fname=label_path,
+                         delimiter=" ", ndmin=2), 4, axis=1)).tolist()
+                    
+        
         img_path = os.path.join(self.img_dir, self.annotations.iloc[index, 0])
         image = np.array(Image.open(img_path).convert("RGB"))
-
-        if self.transform:
+         
+        if self.transform and np.all(np.array(bboxes) >= 0):
             augmentations = self.transform(image=image, bboxes=bboxes)
             image = augmentations["image"]
             bboxes = augmentations["bboxes"]
@@ -105,8 +107,8 @@ def test():
 
     dataset = YOLODataset(
         "COCO/train.csv",
-        "COCO/images/images/",
-        "COCO/labels/labels_new/",
+        "COCO/images/",
+        "COCO/labels/",
         S=[13, 26, 52],
         anchors=anchors,
         transform=transform,
@@ -116,6 +118,7 @@ def test():
         1 / torch.tensor(S).unsqueeze(1).unsqueeze(1).repeat(1, 3, 2)
     )
     loader = DataLoader(dataset=dataset, batch_size=1, shuffle=True)
+    
     for x, y in loader:
         boxes = []
 
